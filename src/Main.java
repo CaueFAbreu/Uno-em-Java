@@ -37,10 +37,9 @@ public class Main {
             while (!jogadaValida) {
                 String escolha = console.lerJogada();
 
-
                 if (escolha.equals("U")) {
                     jogadorAtual.dizerUno();
-                    System.out.println("📢 " + jogadorAtual.getNome() + " gritou: UNO!!!");
+                    System.out.println("📢" + jogadorAtual.getNome() + " gritou: UNO!!!");
                 }
                 else if (escolha.equals("C")) {
                     mesa.jogadorCompraCarta();
@@ -52,6 +51,10 @@ public class Main {
                         int indice = Integer.parseInt(escolha);
 
                         if (indice >= 0 && indice < jogadorAtual.getMao().size()) {
+
+                            // 🔥 SALVA O TAMANHO ANTES DA JOGADA
+                            int tamanhoAntes = jogadorAtual.getMao().size();
+
                             Carta cartaEscolhida = jogadorAtual.getMao().get(indice);
 
                             if (cartaEscolhida.getCor() == Cor.PRETO) {
@@ -69,12 +72,15 @@ public class Main {
                             boolean sucesso = mesa.realizarJogada(cartaEscolhida);
 
                             if (sucesso) {
-                                // VERIFICAÇÃO DE PENALIDADE DO UNO
-                                // Se ficou com 1 carta e NÃO gritou 'U' antes de jogar
-                                if (jogadorAtual.getMao().size() == 1 && !jogadorAtual.isGritouUno()) {
+
+                                // ✅ VERIFICAÇÃO CORRIGIDA DO UNO
+                                if (tamanhoAntes == 2 && !jogadorAtual.isGritouUno()) {
                                     System.out.println("\n⚠️ VOCÊ ESQUECEU DE GRITAR UNO! Penalidade: +2 cartas.");
-                                    mesa.comprarCartas(2);
+                                    mesa.comprarCartas(jogadorAtual, 2);
                                 }
+
+                                // 🔄 RESET DO ESTADO UNO
+                                jogadorAtual.setGritouUno(false);
 
                                 System.out.println("Jogada realizada com sucesso!");
                                 jogadaValida = true;
@@ -90,7 +96,7 @@ public class Main {
             vencedor = mesa.verificaVencedor();
         }
 
-        System.out.println("\n🏆 VITÓRIA DOS GOATS FC! 🏆");
+        System.out.println("\n🏆 VITÓRIA 🏆");
         System.out.println("Parabéns, " + vencedor.getNome() + "! Você venceu a partida!");
     }
 }

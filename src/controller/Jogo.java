@@ -2,7 +2,6 @@ package controller;
 
 import model.Baralho;
 import model.Carta;
-import model.Cor;
 import model.Jogador;
 import model.Valor;
 
@@ -31,19 +30,21 @@ public class Jogo {
 
     public void iniciarPartida(){
         baralho.embaralhar();
+
         for (Jogador j : this.jogadores){
-            for(int i=0; i<7; i++){
-                // Agora usamos o método do Jogador
+            for(int i = 0; i < 7; i++){
                 j.comprarCarta(baralho.comprarCarta());
             }
         }
+
         this.pilhaDescarte.add(baralho.comprarCarta());
     }
 
     public void avancarTurno(){
         int totalJogadores = this.jogadores.size();
+
         if(this.sentidoHorario){
-            this.jogadorAtual = (jogadorAtual + 1)% totalJogadores;
+            this.jogadorAtual = (jogadorAtual + 1) % totalJogadores;
         } else {
             this.jogadorAtual = (this.jogadorAtual - 1 + totalJogadores) % totalJogadores;
         }
@@ -64,25 +65,32 @@ public class Jogo {
 
     public boolean realizarJogada(Carta c){
         if(validarJogada(c)){
-            // O Jogador agora é responsável por remover sua própria carta
+
             getJogadorDaVez().jogarCarta(c);
             pilhaDescarte.add(c);
             c.aplicarEfeito(this);
+
             avancarTurno();
             return true;
-        } else return false;
+        }
+        return false;
     }
 
     public void inverterSentido(){
-        sentidoHorario = sentidoHorario ^ true;
+        sentidoHorario = !sentidoHorario;
     }
 
-    public void comprarCartas(int quantidade) {
+    // ✅ NOVO MÉTODO (para penalidades e efeitos específicos)
+    public void comprarCartas(Jogador jogador, int quantidade) {
         for (int i = 0; i < quantidade; i++) {
             verificarEReciclarBaralho();
-            // Pedimos ao jogador para comprar
-            getJogadorDaVez().comprarCarta(baralho.comprarCarta());
+            jogador.comprarCarta(baralho.comprarCarta());
         }
+    }
+
+    // ⚠️ Mantido para compatibilidade (efeitos tipo +2, +4 padrão)
+    public void comprarCartas(int quantidade) {
+        comprarCartas(getJogadorDaVez(), quantidade);
     }
 
     public void jogadorCompraCarta(){
@@ -93,18 +101,20 @@ public class Jogo {
 
     private void verificarEReciclarBaralho(){
         if (!baralho.temCartas()){
-            Carta topo = this.pilhaDescarte.getLast();
-            this.pilhaDescarte.removeLast();
+            Carta topo = this.pilhaDescarte.get(this.pilhaDescarte.size() - 1);
+            this.pilhaDescarte.remove(this.pilhaDescarte.size() - 1);
+
             baralho.reabastecer(this.pilhaDescarte);
+
             this.pilhaDescarte.clear();
             this.pilhaDescarte.add(topo);
+
             System.out.println("Baralho atualizado! Pilha de cartas reciclada.");
         }
     }
 
     public Jogador verificaVencedor(){
         for (Jogador j : this.jogadores){
-
             if (!j.temCartas()) return j;
         }
         return null;

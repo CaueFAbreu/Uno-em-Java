@@ -14,18 +14,30 @@ public class Jogador {
         this.gritouUno = false;
     }
 
-    public String getNome() { return nome; }
-    public List<Carta> getMao() { return mao; }
+    public String getNome() {
+        return nome;
+    }
 
+    public List<Carta> getMao() {
+        return mao;
+    }
 
-    public boolean isGritouUno() { return gritouUno; }
+    public boolean isGritouUno() {
+        return gritouUno;
+    }
 
+    // ✅ ADICIONADO: setter (resolve erro de acesso private)
+    public void setGritouUno(boolean gritouUno) {
+        this.gritouUno = gritouUno;
+    }
 
     public void comprarCarta(Carta c) {
         this.mao.add(c);
-        this.gritouUno = false; // Se comprou, não está mais em situação de UNO
-    }
 
+        // ⚠️ IMPORTANTE:
+        // Ao comprar carta, não faz sentido manter UNO ativo
+        this.gritouUno = false;
+    }
 
     public void jogarCarta(Carta c) {
         this.mao.remove(c);
@@ -36,7 +48,6 @@ public class Jogador {
         this.gritouUno = true;
     }
 
-    // Facilita verificar se o jogador venceu (mão vazia)
     public boolean temCartas() {
         return !this.mao.isEmpty();
     }

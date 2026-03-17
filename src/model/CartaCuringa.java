@@ -13,7 +13,7 @@ public class CartaCuringa extends Carta {
         switch (this.valor) {
             case CORINGA -> {
 
-                // usa o método setCor() ANTES desta execução.
+
             }
             case CORINGA_MAIS_QUATRO -> {
 

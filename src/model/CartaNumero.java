@@ -8,6 +8,6 @@ public class CartaNumero extends Carta{
 
     @Override
     public void aplicarEfeito(Jogo mesa) {
-        System.out.println("Efeito aplicado! (Em fase de desenvolvimento"); //TODO arrumar os efeitos
+
     }
 }
