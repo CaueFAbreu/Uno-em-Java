@@ -1,5 +1,7 @@
 package model;
+
 import controller.Jogo;
+
 public class CartaAcao extends Carta {
 
     public CartaAcao(Cor cor, Valor valor) {
@@ -8,12 +10,18 @@ public class CartaAcao extends Carta {
 
     @Override
     public void aplicarEfeito(Jogo mesa) {
-        switch(this.valor){
-            case INVERTER ->  mesa.inverterSentido();
-            case PULAR ->  mesa.avancarTurno();
-            case MAIS_DOIS ->  {
+        switch (this.valor) {
+            case INVERTER -> {
+                if (mesa.getTotalJogadores() == 2) {
+                    mesa.avancarTurno();
+                } else {
+                    mesa.inverterSentido();
+                }
+            }
+            case PULAR -> mesa.avancarTurno();
+            case MAIS_DOIS -> {
                 mesa.avancarTurno();
-            mesa.comprarCartas(2);
+                mesa.comprarCartas(2);
             }
         }
     }
