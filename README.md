@@ -38,6 +38,9 @@ Jogo UNO para terminal desenvolvido em Java, seguindo o padrão **MVC (Model-Vie
 - [x] Escolha de cor ao jogar carta Coringa
 - [x] Reciclagem automática da pilha de descarte quando o baralho esgota
 - [x] Exibição da mão do jogador com tradução para o baralho convencional
+- [x] **Carta comprada pode ser jogada imediatamente** se for válida
+- [x] **Primeira carta da pilha de descarte** tratada — Curingas não podem iniciar; cartas de ação aplicam efeito no primeiro jogador
+- [x] **Inverter com 2 jogadores** equivale a Pular, conforme regras oficiais
 
 ---
 
@@ -98,7 +101,7 @@ Durante cada turno, o jogador vê a carta no topo da mesa e suas cartas na mão.
 | Comando | Ação |
 |---|---|
 | `0`, `1`, `2`... | Jogar a carta do índice correspondente |
-| `C` | Comprar uma carta e passar a vez |
+| `C` | Comprar uma carta — se for válida, o jogo pergunta se deseja jogá-la imediatamente |
 | `U` | Gritar **UNO!** antes de jogar a última carta |
 
 **Cartas especiais:**
@@ -106,12 +109,14 @@ Durante cada turno, o jogador vê a carta no topo da mesa e suas cartas na mão.
 | Carta | Efeito |
 |---|---|
 | 🚫 Pular | O próximo jogador perde a vez |
-| 🔄 Inverter | O sentido dos turnos é invertido |
+| 🔄 Inverter | Inverte o sentido (com 2 jogadores, equivale a Pular) |
 | +2 | O próximo jogador compra 2 cartas e perde a vez |
 | 🃏 Coringa | Quem jogou escolhe a nova cor ativa |
 | 🃏 Coringa +4 | Escolha de cor + próximo jogador compra 4 cartas e perde a vez |
 
-> ⚠️ **Penalidade:** Se restar 1 carta na sua mão e você não gritar `U` antes de jogar, levará +2 cartas de punição.
+> ⚠️ **Penalidade UNO:** Se restar 1 carta na sua mão e você não gritar `U` antes de jogar, levará +2 cartas de punição.
+
+> ⚠️ **Início da partida:** Curingas não podem ser a primeira carta da mesa. Cartas de ação como primeira carta aplicam seu efeito imediatamente no primeiro jogador.
 
 ---
 
