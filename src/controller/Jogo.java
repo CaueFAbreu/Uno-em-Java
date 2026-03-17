@@ -2,6 +2,7 @@ package controller;
 
 import model.Baralho;
 import model.Carta;
+import model.CartaCuringa;
 import model.Jogador;
 import model.Valor;
 
@@ -28,29 +29,46 @@ public class Jogo {
         return this.pilhaDescarte.get(this.pilhaDescarte.size() - 1);
     }
 
-    public void iniciarPartida(){
+    public int getTotalJogadores() {
+        return this.jogadores.size();
+    }
+
+    public void iniciarPartida() {
         baralho.embaralhar();
 
-        for (Jogador j : this.jogadores){
-            for(int i = 0; i < 7; i++){
+        for (Jogador j : this.jogadores) {
+            for (int i = 0; i < 7; i++) {
                 j.comprarCarta(baralho.comprarCarta());
             }
         }
 
-        this.pilhaDescarte.add(baralho.comprarCarta());
+        Carta primeiraCartaMesa;
+        do {
+            primeiraCartaMesa = baralho.comprarCarta();
+        } while (primeiraCartaMesa instanceof CartaCuringa);
+
+        this.pilhaDescarte.add(primeiraCartaMesa);
+
+        System.out.println("\n=== A PARTIDA VAI COMEÇAR! ===");
+        if (primeiraCartaMesa.getValor() == Valor.PULAR ||
+            primeiraCartaMesa.getValor() == Valor.INVERTER ||
+            primeiraCartaMesa.getValor() == Valor.MAIS_DOIS) {
+            System.out.println("⚠️  A primeira carta é uma carta de ação! Efeito aplicado ao primeiro jogador.");
+            primeiraCartaMesa.aplicarEfeito(this);
+        }
     }
 
-    public void avancarTurno(){
+    public void avancarTurno() {
         int totalJogadores = this.jogadores.size();
 
-        if(this.sentidoHorario){
+        if (this.sentidoHorario) {
             this.jogadorAtual = (jogadorAtual + 1) % totalJogadores;
         } else {
             this.jogadorAtual = (this.jogadorAtual - 1 + totalJogadores) % totalJogadores;
         }
     }
 
-    public Jogador getJogadorDaVez(){
+    public Jogador getJogadorDaVez() {
         return jogadores.get(jogadorAtual);
     }
 
@@ -63,23 +81,20 @@ public class Jogo {
                 c.getValor() == Valor.CORINGA_MAIS_QUATRO);
     }
 
-    public boolean realizarJogada(Carta c){
-        if(validarJogada(c)){
-
+    public boolean realizarJogada(Carta c) {
+        if (validarJogada(c)) {
             getJogadorDaVez().jogarCarta(c);
             pilhaDescarte.add(c);
             c.aplicarEfeito(this);
-
             avancarTurno();
             return true;
         }
         return false;
     }
 
-    public void inverterSentido(){
+    public void inverterSentido() {
         sentidoHorario = !sentidoHorario;
     }
-
 
     public void comprarCartas(Jogador jogador, int quantidade) {
         for (int i = 0; i < quantidade; i++) {
@@ -88,19 +103,19 @@ public class Jogo {
         }
     }
 
-
     public void comprarCartas(int quantidade) {
         comprarCartas(getJogadorDaVez(), quantidade);
     }
 
-    public void jogadorCompraCarta(){
+    public Carta jogadorCompraCarta() {
         verificarEReciclarBaralho();
-        getJogadorDaVez().comprarCarta(baralho.comprarCarta());
-        avancarTurno();
+        Carta cartaComprada = baralho.comprarCarta();
+        getJogadorDaVez().comprarCarta(cartaComprada);
+        return cartaComprada;
     }
 
-    private void verificarEReciclarBaralho(){
-        if (!baralho.temCartas()){
+    private void verificarEReciclarBaralho() {
+        if (!baralho.temCartas()) {
             Carta topo = this.pilhaDescarte.get(this.pilhaDescarte.size() - 1);
             this.pilhaDescarte.remove(this.pilhaDescarte.size() - 1);
 
@@ -113,8 +128,8 @@ public class Jogo {
         }
     }
 
-    public Jogador verificaVencedor(){
-        for (Jogador j : this.jogadores){
+    public Jogador verificaVencedor() {
+        for (Jogador j : this.jogadores) {
             if (!j.temCartas()) return j;
         }
         return null;
