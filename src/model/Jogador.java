@@ -26,7 +26,7 @@ public class Jogador {
         return gritouUno;
     }
 
-    // ✅ ADICIONADO: setter (resolve erro de acesso private)
+
     public void setGritouUno(boolean gritouUno) {
         this.gritouUno = gritouUno;
     }
@@ -34,8 +34,7 @@ public class Jogador {
     public void comprarCarta(Carta c) {
         this.mao.add(c);
 
-        // ⚠️ IMPORTANTE:
-        // Ao comprar carta, não faz sentido manter UNO ativo
+
         this.gritouUno = false;
     }
 
@@ -43,7 +42,7 @@ public class Jogador {
         this.mao.remove(c);
     }
 
-    // Método para a regra do UNO
+
     public void dizerUno() {
         this.gritouUno = true;
     }

@@ -52,7 +52,7 @@ public class Main {
 
                         if (indice >= 0 && indice < jogadorAtual.getMao().size()) {
 
-                            // 🔥 SALVA O TAMANHO ANTES DA JOGADA
+
                             int tamanhoAntes = jogadorAtual.getMao().size();
 
                             Carta cartaEscolhida = jogadorAtual.getMao().get(indice);
@@ -73,13 +73,13 @@ public class Main {
 
                             if (sucesso) {
 
-                                // ✅ VERIFICAÇÃO CORRIGIDA DO UNO
+
                                 if (tamanhoAntes == 2 && !jogadorAtual.isGritouUno()) {
                                     System.out.println("\n⚠️ VOCÊ ESQUECEU DE GRITAR UNO! Penalidade: +2 cartas.");
                                     mesa.comprarCartas(jogadorAtual, 2);
                                 }
 
-                                // 🔄 RESET DO ESTADO UNO
+
                                 jogadorAtual.setGritouUno(false);
 
                                 System.out.println("Jogada realizada com sucesso!");

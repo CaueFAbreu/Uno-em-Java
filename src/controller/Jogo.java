@@ -80,7 +80,7 @@ public class Jogo {
         sentidoHorario = !sentidoHorario;
     }
 
-    // ✅ NOVO MÉTODO (para penalidades e efeitos específicos)
+
     public void comprarCartas(Jogador jogador, int quantidade) {
         for (int i = 0; i < quantidade; i++) {
             verificarEReciclarBaralho();
@@ -88,7 +88,7 @@ public class Jogo {
         }
     }
 
-    // ⚠️ Mantido para compatibilidade (efeitos tipo +2, +4 padrão)
+
     public void comprarCartas(int quantidade) {
         comprarCartas(getJogadorDaVez(), quantidade);
     }
