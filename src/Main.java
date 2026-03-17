@@ -18,8 +18,6 @@ public class Main {
         Jogo mesa = new Jogo(jogadores, baralho);
         mesa.iniciarPartida();
 
-        System.out.println("\n=== A PARTIDA VAI COMEÇAR! ===");
-
         Jogador vencedor = null;
 
         while (vencedor == null) {
@@ -27,7 +25,9 @@ public class Main {
             Carta cartaTopo = mesa.getCartaTopo();
 
             System.out.println("\n-------------------------------------------------");
-            String textoTopo = isConvencional ? TradutorBaralho.traduzirParaConvencional(cartaTopo) : TradutorBaralho.formatarOficial(cartaTopo);
+            String textoTopo = isConvencional
+                    ? TradutorBaralho.traduzirParaConvencional(cartaTopo)
+                    : TradutorBaralho.formatarOficial(cartaTopo);
             System.out.println("CARTA NA MESA: " + textoTopo);
 
             console.mostrarMaoDoJogador(jogadorAtual);
@@ -39,28 +39,67 @@ public class Main {
 
                 if (escolha.equals("U")) {
                     jogadorAtual.dizerUno();
-                    System.out.println("📢" + jogadorAtual.getNome() + " gritou: UNO!!!");
-                }
-                else if (escolha.equals("C")) {
-                    mesa.jogadorCompraCarta();
-                    System.out.println(jogadorAtual.getNome() + " comprou uma carta e passou a vez.");
+                    System.out.println("📢 " + jogadorAtual.getNome() + " gritou: UNO!!!");
+
+                } else if (escolha.equals("C")) {
+
+                    Carta cartaComprada = mesa.jogadorCompraCarta();
+                    String textoCartaComprada = isConvencional
+                            ? TradutorBaralho.traduzirParaConvencional(cartaComprada)
+                            : TradutorBaralho.formatarOficial(cartaComprada);
+                    System.out.println(jogadorAtual.getNome() + " comprou: " + textoCartaComprada);
+
+                    if (mesa.validarJogada(cartaComprada)) {
+                        System.out.print("Essa carta é válida! Deseja jogá-la agora? (S/N): ");
+                        String resposta = scannerAuxiliar.nextLine().trim().toUpperCase();
+
+                        if (resposta.equals("S")) {
+
+                            if (cartaComprada.getCor() == Cor.PRETO) {
+                                System.out.println("Escolha a cor (1-Vermelho, 2-Amarelo, 3-Verde, 4-Azul):");
+                                int opCor = scannerAuxiliar.nextInt();
+                                scannerAuxiliar.nextLine();
+                                switch (opCor) {
+                                    case 1 -> cartaComprada.setCor(Cor.VERMELHO);
+                                    case 2 -> cartaComprada.setCor(Cor.AMARELO);
+                                    case 3 -> cartaComprada.setCor(Cor.VERDE);
+                                    case 4 -> cartaComprada.setCor(Cor.AZUL);
+                                }
+                            }
+                            int tamanhoAntes = jogadorAtual.getMao().size();
+                            mesa.realizarJogada(cartaComprada);
+
+                            if (tamanhoAntes == 2 && !jogadorAtual.isGritouUno()) {
+                                System.out.println("\n⚠️ VOCÊ ESQUECEU DE GRITAR UNO! Penalidade: +2 cartas.");
+                                mesa.comprarCartas(jogadorAtual, 2);
+                            }
+                            jogadorAtual.setGritouUno(false);
+                            System.out.println("Carta jogada com sucesso!");
+                        } else {
+
+                            mesa.avancarTurno();
+                            System.out.println(jogadorAtual.getNome() + " optou por não jogar e passou a vez.");
+                        }
+                    } else {
+
+                        mesa.avancarTurno();
+                        System.out.println("Carta não é válida para jogar agora. Vez passada.");
+                    }
                     jogadaValida = true;
-                }
-                else {
+
+                } else {
                     try {
                         int indice = Integer.parseInt(escolha);
 
                         if (indice >= 0 && indice < jogadorAtual.getMao().size()) {
-
-
                             int tamanhoAntes = jogadorAtual.getMao().size();
-
                             Carta cartaEscolhida = jogadorAtual.getMao().get(indice);
 
                             if (cartaEscolhida.getCor() == Cor.PRETO) {
                                 System.out.println("Escolha a cor (1-Vermelho, 2-Amarelo, 3-Verde, 4-Azul):");
                                 int opCor = scannerAuxiliar.nextInt();
-                                switch(opCor) {
+                                scannerAuxiliar.nextLine();
+                                switch (opCor) {
                                     case 1 -> cartaEscolhida.setCor(Cor.VERMELHO);
                                     case 2 -> cartaEscolhida.setCor(Cor.AMARELO);
                                     case 3 -> cartaEscolhida.setCor(Cor.VERDE);
@@ -68,20 +107,14 @@ public class Main {
                                 }
                             }
 
-                            // Tenta realizar a jogada
                             boolean sucesso = mesa.realizarJogada(cartaEscolhida);
 
                             if (sucesso) {
-
-
                                 if (tamanhoAntes == 2 && !jogadorAtual.isGritouUno()) {
                                     System.out.println("\n⚠️ VOCÊ ESQUECEU DE GRITAR UNO! Penalidade: +2 cartas.");
                                     mesa.comprarCartas(jogadorAtual, 2);
                                 }
-
-
                                 jogadorAtual.setGritouUno(false);
-
                                 System.out.println("Jogada realizada com sucesso!");
                                 jogadaValida = true;
                             } else {
